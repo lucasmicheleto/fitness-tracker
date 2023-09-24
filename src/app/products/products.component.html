@@ -1,0 +1,11 @@
+<h3>My Products</h3>
+<form (ngSubmit)="addProduct(f)" #f="ngForm">
+    <input type="text" name="productName" ngModel required/>
+    <button type="submit"  mat-mini-fab color="primary">
+        <mat-icon>add</mat-icon>
+    </button>
+</form>
+<app-product 
+(productClicked)="onRemoveProduct(p)"
+*ngFor="let p of products"  
+[productName]="p"></app-product>
