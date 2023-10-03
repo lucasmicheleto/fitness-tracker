@@ -40,3 +40,9 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+/.vs/fitness-tracker/config/applicationhost.config
+/.vs/fitness-tracker/FileContentIndex/80db8c12-837b-49cc-b6bb-d9e135d979c8.vsidx
+/.vs/fitness-tracker/v17/.wsuo
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
