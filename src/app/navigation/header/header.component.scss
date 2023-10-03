@@ -1,0 +1,12 @@
+a {
+    text-decoration: none;
+    color: var(secondary);
+}
+
+a:hover, a:active {
+    color: var(primary);
+}
+
+.navigation-items {
+    list-style: none;
+}
