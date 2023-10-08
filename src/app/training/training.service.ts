@@ -1,22 +1,33 @@
-import { Subject } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 
 import { Exercise } from './exercise.model';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { CollectionReference, Firestore, collection, collectionData } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrainingService {
   exerciseChanged = new Subject<Exercise|null>();
-  private availableExercises: Exercise[] = [
-    { id: 'crunches', name: 'Crunches', duration: 30, calories: 8 },
-    { id: 'touch-toes', name: 'Touch Toes', duration: 180, calories: 15 },
-    { id: 'side-lunges', name: 'Side Lunges', duration: 120, calories: 18 },
-    { id: 'burpees', name: 'Burpees', duration: 60, calories: 8 }
-  ];
+  exercisesChanged = new Subject<Exercise[]>();
+  private exercisesCollection!: CollectionReference;
+  // exercises$!: Observable<Exercise[]>;
+  firestore: Firestore = inject(Firestore);
+  private availableExercises: Exercise[] = [];
   private runningExercise!: Exercise | null;
   private exercises: Exercise[] = [];
 
+  fetchAvailableExercises() {
+    this.exercisesCollection = collection(this.firestore, 'availableExercises');
+    collectionData(this.exercisesCollection, { idField: 'id'}).pipe(
+      map(arr => arr.map(val => val as Exercise))
+    ).subscribe({
+      next: exercises => {
+        this.availableExercises = exercises;
+        this.exercisesChanged.next([...this.availableExercises])
+      }
+    });
+  }
   getAvailableExercises() {
     return this.availableExercises.slice();
   }
