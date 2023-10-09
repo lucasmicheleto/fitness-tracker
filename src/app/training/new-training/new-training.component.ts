@@ -21,7 +21,7 @@ export class NewTrainingComponent implements OnInit {
     // this.exercises$ = collectionData(this.exercisesCollection, { idField: 'id'}).pipe(
     //   map(arr => arr.map(val => val as Exercise))
     // );
-    this.exercises$ = this.trainingService.exercisesChanged;
+    this.exercises$ = this.trainingService.exercises$;
     this.trainingService.fetchAvailableExercises();
   }
 
