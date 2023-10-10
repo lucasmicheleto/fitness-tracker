@@ -4,6 +4,8 @@ import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { getAuth, createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword, signOut, authState } from '@angular/fire/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UIService } from '../shared/ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,10 @@ export class AuthService {
   auth: Auth = inject(Auth);
   authChange = new Subject<boolean>();
   private isAuthenticated = false;
-  constructor(private router: Router) { 
+  constructor(private router: Router
+    ,public snackbar: MatSnackBar
+    ,private uiService: UIService
+    ) { 
     this.initAuthListener();
   }
 
@@ -34,26 +39,26 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
+    this.uiService.loadingState$.next(true);
     createUserWithEmailAndPassword(this.auth, authData.email, authData.password)
     .then((userCredential) => {
-      // The user has been created successfully.
-      //console.log('User created: ', userCredential.user);
+      this.uiService.loadingState$.next(false);
     })
     .catch((error) => {
-      // There was an error creating the user.
-      console.error('Error creating user: ', error);
+      this.uiService.loadingState$.next(false);
+      this.snackbar.open(error.message)
     });
   }
 
   login(authData: AuthData) {
+    this.uiService.loadingState$.next(true);
     signInWithEmailAndPassword(this.auth, authData.email, authData.password)
     .then((userCredential) => {
-      // The user has been created successfully.
-      //console.log('Login user: ', userCredential.user);
+      this.uiService.loadingState$.next(false);
     })
     .catch((error) => {
-      // There was an error creating the user.
-      console.error('Error login user: ', error);
+      this.uiService.loadingState$.next(false);
+      this.snackbar.open(error.message)
     });
 
   }

@@ -16,6 +16,7 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { MatTableModule } from '@angular/material/table'
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator' 
+import { MatSnackBarModule } from '@angular/material/snack-bar'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -82,6 +83,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatSnackBarModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
