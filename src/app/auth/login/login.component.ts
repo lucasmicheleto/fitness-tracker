@@ -29,11 +29,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: new FormControl('', {
         validators: [Validators.required, Validators.email]
       }),
-      password: new FormControl('', { validators: [Validators.required] })
+      password: new FormControl('', { validators: [Validators.required, Validators.minLength(8)] })
     });
   }
 
   onSubmit() {
+    if (this.loginForm.invalid) return;
     this.authService.login({
       email: this.loginForm.value.email,
       password: this.loginForm.value.password

@@ -15,7 +15,7 @@ export class AuthService {
   authChange = new Subject<boolean>();
   private isAuthenticated = false;
   constructor(private router: Router
-    ,public snackbar: MatSnackBar
+    ,private snackbar: MatSnackBar
     ,private uiService: UIService
     ) { 
     this.initAuthListener();
@@ -46,7 +46,7 @@ export class AuthService {
     })
     .catch((error) => {
       this.uiService.loadingState$.next(false);
-      this.snackbar.open(error.message)
+      this.snackbar.open(error.message, 'Register Failed', { duration: 3000})
     });
   }
 
@@ -58,7 +58,7 @@ export class AuthService {
     })
     .catch((error) => {
       this.uiService.loadingState$.next(false);
-      this.snackbar.open(error.message)
+      this.snackbar.open(error.message, 'Login Failed', { duration: 3000})
     });
 
   }
