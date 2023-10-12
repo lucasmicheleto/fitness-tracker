@@ -3,13 +3,15 @@ import { Observable, Subject, map } from 'rxjs';
 import { Exercise } from './exercise.model';
 import { Injectable, inject } from '@angular/core';
 import { CollectionReference, Firestore, addDoc, collection, collectionData, onSnapshot } from '@angular/fire/firestore';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UIService } from '../shared/ui.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrainingService {
   exercise$ = new Subject<Exercise|null>();
-  exercises$ = new Subject<Exercise[]>();
+  exercises$ = new Subject<Exercise[]|null>();
   finishedExercises$ = new Subject<Exercise[]>();
   private exercisesCollection!: CollectionReference;
   // exercises$!: Observable<Exercise[]>;
@@ -18,15 +20,24 @@ export class TrainingService {
   private runningExercise!: Exercise | null;
   private exercises: Exercise[] = [];
 
+  constructor(private snackbar: MatSnackBar, private uiService: UIService) {}
+
   fetchAvailableExercises() {
+    this.uiService.loadingState$.next(true);
     if (!this.exercisesCollection)
       this.exercisesCollection = collection(this.firestore, 'availableExercises');
     collectionData(this.exercisesCollection, { idField: 'id'}).pipe(
       map(arr => arr.map(val => val as Exercise))
     ).subscribe({
       next: exercises => {
+        this.uiService.loadingState$.next(false);
         this.availableExercises = exercises;
         this.exercises$.next([...this.availableExercises])
+      },
+      error: error => {
+        this.uiService.loadingState$.next(false);
+        this.exercises$.next(null);
+        this.snackbar.open(error.message, 'Fetching Exercises Failed', { duration: 3000 })
       }
     });
   }

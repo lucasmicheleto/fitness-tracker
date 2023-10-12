@@ -3,7 +3,8 @@ import { NgForm } from '@angular/forms';
 
 import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
+import { UIService } from 'src/app/shared/ui.service';
 
 
 @Component({
@@ -12,16 +13,22 @@ import { Observable } from 'rxjs';
   styleUrls: ['./new-training.component.scss']
 })
 export class NewTrainingComponent implements OnInit {
-  exercises$!: Observable<Exercise[]>;
+  exercises$!: Observable<Exercise[]|null>;
 
-  constructor(private trainingService: TrainingService) { }
+  constructor(private trainingService: TrainingService
+    , public uiService: UIService
+    ) { }
 
   ngOnInit() {
     // this.exercisesCollection = collection(this.firestore, 'availableExercises');
     // this.exercises$ = collectionData(this.exercisesCollection, { idField: 'id'}).pipe(
     //   map(arr => arr.map(val => val as Exercise))
     // );
-    this.exercises$ = this.trainingService.exercises$;
+    this.exercises$ = this.trainingService.exercises$.pipe(shareReplay());
+    this.trainingService.fetchAvailableExercises();
+  }
+
+  fetchExercises() {
     this.trainingService.fetchAvailableExercises();
   }
 
